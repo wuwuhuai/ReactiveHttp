@@ -5,6 +5,7 @@ import github.leavesc.reactivehttpsamples.base.BaseActivity
 import github.leavesc.reactivehttpsamples.ui.MapActivity
 import github.leavesc.reactivehttpsamples.ui.SingleRequestActivity
 import github.leavesc.reactivehttpsamples.ui.TogetherRequestActivity
+import github.leavesc.reactivehttpsamples.utils.EncryptUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -27,6 +28,8 @@ class MainActivity : BaseActivity() {
         btn_together.setOnClickListener {
             startActivity<TogetherRequestActivity>()
         }
+
+        EncryptUtils.encrypt()
     }
 
 }
