@@ -5,10 +5,14 @@ import github.leavesc.monitor.MonitorInterceptor
 import github.leavesc.reactivehttp.datasource.RemoteExtendDataSource
 import github.leavesc.reactivehttp.viewmodel.IUIActionEvent
 import github.leavesc.reactivehttpsamples.MainApplication
+import github.leavesc.reactivehttpsamples.core.http.logging.Level
+import github.leavesc.reactivehttpsamples.core.http.logging.LoggingInterceptor
 import okhttp3.OkHttpClient
+import okhttp3.internal.platform.Platform
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
 
 /**
  * @Author: leavesC
@@ -26,6 +30,20 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
         }
 
         private fun createHttpClient(): OkHttpClient {
+
+
+            /**
+             * 日志拦截器:
+             * 打印请求和响应
+             */
+            val loggingInterceptor = LoggingInterceptor.Builder()
+                .setLevel(Level.BASIC)
+                .log(Platform.WARN)
+                .request("Request")
+                .response("Response")
+                .build()
+
+
             val builder = OkHttpClient.Builder()
                 .readTimeout(1000L, TimeUnit.MILLISECONDS)
                 .writeTimeout(1000L, TimeUnit.MILLISECONDS)
@@ -33,6 +51,7 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
                 .retryOnConnectionFailure(true)
                 .addInterceptor(FilterInterceptor())
                 .addInterceptor(MonitorInterceptor(MainApplication.context))
+                .addInterceptor(loggingInterceptor)
             return builder.build()
         }
 
