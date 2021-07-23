@@ -1,12 +1,7 @@
 package github.leavesc.reactivehttpsamples.core.http
 
 import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import okhttp3.Response
-import okio.BufferedSink
-import okio.GzipSink
-import okio.buffer
 import java.io.IOException
 
 
@@ -61,3 +56,36 @@ class ReqHeaderInterceptor : Interceptor {
         return chain.proceed(newReqBuilder.build())
     }
 }
+
+/**
+ * 请求查询参数拦截器
+ */
+class ReqQueryParamInterceptor : Interceptor {
+    /**
+     * 查询参数哈希表，临时存放查询参数key-value
+     */
+    private val queryParamsMap: LinkedHashMap<String, String> = LinkedHashMap()
+
+    /**
+     * 添加请求查询参数
+     * @param key 字段key
+     * @param value 字段值
+     */
+    fun addQueryParam(key: String, value: String) {
+        queryParamsMap[key] = value
+    }
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val originReq = chain.request()
+        val newHttpUrlBuilder = originReq.url.newBuilder()
+
+        queryParamsMap.forEach {
+            newHttpUrlBuilder.addQueryParameter(it.key, it.value)
+        }
+
+
+        return chain.proceed(originReq.newBuilder().url(newHttpUrlBuilder.build()).build())
+    }
+}
+
