@@ -43,12 +43,21 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
                 .response("Response")
                 .build()
 
+            /**
+             * 请求头拦截器
+             */
+            val reqHeaderInterceptor = ReqHeaderInterceptor()
+            reqHeaderInterceptor.apply {
+                addHead("Content-Type", "application/json")
+            }
+
 
             val builder = OkHttpClient.Builder()
                 .readTimeout(1000L, TimeUnit.MILLISECONDS)
                 .writeTimeout(1000L, TimeUnit.MILLISECONDS)
                 .connectTimeout(1000L, TimeUnit.MILLISECONDS)
                 .retryOnConnectionFailure(true)
+                .addInterceptor(reqHeaderInterceptor)
                 .addInterceptor(FilterInterceptor())
                 .addInterceptor(MonitorInterceptor(MainApplication.context))
                 .addInterceptor(loggingInterceptor)
