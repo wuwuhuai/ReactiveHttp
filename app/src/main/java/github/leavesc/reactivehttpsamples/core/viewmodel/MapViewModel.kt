@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import github.leavesc.reactivehttpsamples.base.BaseViewModel
 import github.leavesc.reactivehttpsamples.core.bean.DistrictBean
+import github.leavesc.reactivehttpsamples.core.bean.param.User
 import kotlinx.coroutines.delay
 
 /**
@@ -37,6 +38,36 @@ class MapViewModel : BaseViewModel() {
     val realLiveData = MutableLiveData<List<DistrictBean>>()
 
     val adCodeSelectedLiveData = MutableLiveData<String>()
+
+    /**
+     * 带body请求使用方法示例
+     */
+    fun bodyReqDemo(name: String, sex: String) {
+        remoteDataSource.enqueueLoading({
+            //主动延迟一段时间，避免弹窗太快消失
+            delay(2000)
+            bodyReqDemo(User(name, sex))
+        }) {
+            onStart {
+                log("onStart")
+            }
+            onSuccess {
+                log("onSuccess")
+            }
+            onSuccessIO {
+                log("onSuccessIO")
+            }
+            onFailed {
+                log("onFailed")
+            }
+            onCancelled {
+                log("onCancelled")
+            }
+            onFinally {
+                log("onFinally")
+            }
+        }
+    }
 
     fun getProvince() {
         remoteDataSource.enqueueLoading({
