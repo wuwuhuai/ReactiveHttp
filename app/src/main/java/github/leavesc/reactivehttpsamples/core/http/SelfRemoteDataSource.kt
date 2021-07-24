@@ -37,11 +37,11 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
              * 打印请求和响应
              */
             val loggingInterceptor = LoggingInterceptor.Builder()
-                .setLevel(Level.BASIC)
-                .log(Platform.WARN)
-                .request("Request")
-                .response("Response")
-                .build()
+                    .setLevel(Level.BASIC)
+                    .log(Platform.WARN)
+                    .request("Request")
+                    .response("Response")
+                    .build()
 
             /**
              * 请求头拦截器
@@ -59,16 +59,24 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
                 addQueryParam(HttpConfig.KEY, HttpConfig.KEY_MAP)
             }
 
+            /**
+             * body 加密拦截器，使用DES算法加密
+             */
+            val reqEncryptInterceptor = ReqEncryptInterceptor()
+            reqEncryptInterceptor.readSecretedKeyStr("AYA4KcdKEMs")
+
 
             val builder = OkHttpClient.Builder()
-                .readTimeout(1000L, TimeUnit.MILLISECONDS)
-                .writeTimeout(1000L, TimeUnit.MILLISECONDS)
-                .connectTimeout(1000L, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(true)
-                .addInterceptor(reqHeaderInterceptor)
-                .addInterceptor(queryParamInterceptor)
-                .addInterceptor(MonitorInterceptor(MainApplication.context))
-                .addInterceptor(loggingInterceptor)
+                    .readTimeout(1000L, TimeUnit.MILLISECONDS)
+                    .writeTimeout(1000L, TimeUnit.MILLISECONDS)
+                    .connectTimeout(1000L, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(true)
+                    .addInterceptor(reqHeaderInterceptor)
+                    .addInterceptor(queryParamInterceptor)
+                    .addInterceptor(MonitorInterceptor(MainApplication.context))
+                    .addInterceptor(loggingInterceptor)
+                    .addInterceptor(reqEncryptInterceptor)
+                    .addInterceptor(loggingInterceptor)
             return builder.build()
         }
 

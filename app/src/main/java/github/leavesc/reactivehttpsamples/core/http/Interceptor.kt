@@ -1,13 +1,18 @@
 package github.leavesc.reactivehttpsamples.core.http
 
+import github.leavesc.reactivehttpsamples.utils.DESUtils
 import okhttp3.Interceptor
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import okio.Buffer
 import okio.BufferedSink
 import okio.GzipSink
 import okio.buffer
 import java.io.IOException
+import java.nio.charset.Charset
 
 
 /**
@@ -97,30 +102,43 @@ class ReqQueryParamInterceptor : Interceptor {
 /**
  * 请求内容加密拦截器
  */
-//class RequestEncryptInterceptor : Interceptor {
-//    @Throws(IOException::class)
-//    override fun intercept(chain: Interceptor.Chain): Response {
-//        val originReq = chain.request()
-//        val body = originReq.body
-//        val buffer = Buffer()
-//        body?.writeTo(buffer)
-//        var charset= Charset.forName("UTF-8")
-//        val contentType = body?.contentType()
-//        charset = contentType?.charset(charset)
-//        var paramsStr= buffer.readString(charset)
-//        try {
-//            paramsStr = EncryptUtils.encryptParams(paramsStr)
-//        } catch (e: Exception) {
-//            LogUtils.e(e)
-//        }
-//        val requestBody: RequestBody =
-//            RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), paramsStr)
-//        originReq = originReq.newBuilder()
-//            .post(requestBody)
-//            .build()
-//        return chain.proceed(originReq)
-//    }
-//}
+class ReqEncryptInterceptor : Interceptor {
+
+    private var keyStr: String? = null
+    fun readSecretedKeyStr(secretedKeyStr: String) {
+        keyStr = secretedKeyStr
+    }
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        var originReq = chain.request()
+        val body = originReq.body
+        val buffer = Buffer()
+        body?.writeTo(buffer)
+        var charset = Charset.forName("UTF-8")
+        val contentType = body?.contentType()
+        if (contentType != null) {
+            try {
+                charset = contentType.charset(Charset.forName("UTF-8"));
+            } catch (e: Exception) {
+                e.printStackTrace();
+            }
+        }
+
+        var dataStr = buffer.readString(charset)
+        try {
+            dataStr = DESUtils.encrypt(dataStr, keyStr)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val requestBody: RequestBody =
+                dataStr.toRequestBody("text/plain; charset=utf-8".toMediaTypeOrNull())
+        originReq = originReq.newBuilder()
+                .post(requestBody)
+                .build()
+        return chain.proceed(originReq)
+    }
+}
 
 
 /**
