@@ -1,6 +1,7 @@
 package github.leavesc.reactivehttpsamples.core.http
 
 import github.leavesc.reactivehttpsamples.utils.DESUtils
+import github.leavesc.reactivehttpsamples.utils.HmacUtils
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -12,6 +13,7 @@ import okio.BufferedSink
 import okio.GzipSink
 import okio.buffer
 import java.io.IOException
+import java.lang.StringBuilder
 import java.nio.charset.Charset
 
 
@@ -35,6 +37,28 @@ class FilterInterceptor : Interceptor {
 
 }
 
+
+/**
+ * 请求消息摘要签名拦截器
+ */
+class ReqSignatureInterceptor : Interceptor {
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val originReq = chain.request()
+        val reqStrBuilder = StringBuilder(originReq.toString())
+        if (originReq.body == null) {
+            reqStrBuilder.append("")
+        }
+        val signature = HmacUtils.hmacSha256AndBase64(reqStrBuilder.toString(), "signaturekey")
+
+        val newReqBuilder = originReq.newBuilder()
+        newReqBuilder.header("X-Signature", signature)
+
+
+        return chain.proceed(newReqBuilder.build())
+    }
+}
 
 /**
  * 请求头拦截器

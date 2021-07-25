@@ -60,6 +60,12 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
             }
 
             /**
+             * 请求消息摘要签名拦截器
+             */
+            val reqSignatureInterceptor = ReqSignatureInterceptor()
+
+
+            /**
              * body 加密拦截器，使用DES算法加密
              */
             val reqEncryptInterceptor = ReqEncryptInterceptor()
@@ -74,6 +80,7 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
                     .addInterceptor(reqHeaderInterceptor)
                     .addInterceptor(queryParamInterceptor)
                     .addInterceptor(MonitorInterceptor(MainApplication.context))
+                    .addInterceptor(reqSignatureInterceptor)
                     .addInterceptor(loggingInterceptor)
                     .addInterceptor(reqEncryptInterceptor)
                     .addInterceptor(loggingInterceptor)
