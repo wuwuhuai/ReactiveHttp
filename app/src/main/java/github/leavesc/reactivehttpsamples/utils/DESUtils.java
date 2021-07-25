@@ -53,7 +53,7 @@ public class DESUtils {
             //返回加密后的数据字符串
             String secretedDataStr = new String(relBase);
 
-            Log.v(TAG, String.format("data:%s,secretedKeyStr:%s,secretedDataStr：%s", data, secretedKeyStr, secretedDataStr));
+            Log.v(TAG, String.format("加密：data:%s,secretedKeyStr:%s,secretedDataStr：%s", data, secretedKeyStr, secretedDataStr));
             return secretedDataStr;
 
 
@@ -82,7 +82,7 @@ public class DESUtils {
 
             String decryptedDataStr = new String(cipher.doFinal(base64));
 
-            Log.v(TAG, String.format("secretedDataStr:%s,secretedKeyStr:%s,decryptedDataStr：%s", secretedDataStr, secretedKeyStr, decryptedDataStr));
+            Log.v(TAG, String.format("解密：secretedDataStr:%s,secretedKeyStr:%s,decryptedDataStr：%s", secretedDataStr, secretedKeyStr, decryptedDataStr));
 
             //返回原始数据
             return decryptedDataStr;
