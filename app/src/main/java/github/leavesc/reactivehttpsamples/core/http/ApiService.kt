@@ -1,13 +1,7 @@
 package github.leavesc.reactivehttpsamples.core.http
 
-import github.leavesc.reactivehttpsamples.core.bean.DistrictBean
-import github.leavesc.reactivehttpsamples.core.bean.ForecastsBean
-import github.leavesc.reactivehttpsamples.core.bean.HttpWrapBean
-import github.leavesc.reactivehttpsamples.core.bean.param.User
-import retrofit2.http.Body
+import github.leavesc.reactivehttpsamples.core.bean.param.Data
 import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
 
 /**
  * @Author: leavesC
@@ -18,6 +12,6 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("config/district")
-    suspend fun getProvince(): HttpWrapBean<List<DistrictBean>>
+    suspend fun getProvince(): Data
 
 }

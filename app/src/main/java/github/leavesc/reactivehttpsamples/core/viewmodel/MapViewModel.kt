@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import github.leavesc.reactivehttpsamples.base.BaseViewModel
 import github.leavesc.reactivehttpsamples.core.bean.DistrictBean
-import github.leavesc.reactivehttpsamples.core.bean.param.User
 import kotlinx.coroutines.delay
 
 /**
@@ -52,8 +51,8 @@ class MapViewModel : BaseViewModel() {
             onSuccess {
                 log("onSuccess")
                 stateLiveData.value = TYPE_PROVINCE
-                provinceLiveData.value = it[0].districts
-                realLiveData.value = it[0].districts
+                provinceLiveData.value = it.districts[0].districts
+                realLiveData.value = it.districts[0].districts
             }
             onSuccessIO {
                 log("onSuccessIO")

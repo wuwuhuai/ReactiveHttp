@@ -1,6 +1,5 @@
 package github.leavesc.reactivehttp.datasource
 
-import github.leavesc.reactivehttp.bean.IHttpWrapBean
 import github.leavesc.reactivehttp.callback.RequestCallback
 import github.leavesc.reactivehttp.viewmodel.IUIActionEvent
 import kotlinx.coroutines.Job
@@ -17,7 +16,7 @@ abstract class RemoteDataSource<Api : Any>(
 ) : BaseRemoteDataSource<Api>(iUiActionEvent, apiServiceClass) {
 
     fun <Data> enqueueLoading(
-        apiFun: suspend Api.() -> IHttpWrapBean<Data>,
+        apiFun: suspend Api.() -> Data,
         baseUrl: String = "",
         callbackFun: (RequestCallback<Data>.() -> Unit)? = null
     ): Job {
@@ -30,7 +29,7 @@ abstract class RemoteDataSource<Api : Any>(
     }
 
     fun <Data> enqueue(
-        apiFun: suspend Api.() -> IHttpWrapBean<Data>,
+        apiFun: suspend Api.() -> Data,
         showLoading: Boolean = false,
         baseUrl: String = "",
         callbackFun: (RequestCallback<Data>.() -> Unit)? = null
@@ -48,7 +47,7 @@ abstract class RemoteDataSource<Api : Any>(
                     showLoading(coroutineContext[Job])
                 }
                 callback?.onStart?.invoke()
-                val response: IHttpWrapBean<Data>
+                val response: Data
                 try {
                     response = apiFun.invoke(getApiService(baseUrl))
 //                    if (!response.httpIsSuccess) {
@@ -58,7 +57,7 @@ abstract class RemoteDataSource<Api : Any>(
                     handleException(throwable, callback)
                     return@launchMain
                 }
-                onGetResponse(callback, response.httpData)
+                onGetResponse(callback, response)
             } finally {
                 try {
                     callback?.onFinally?.invoke()
