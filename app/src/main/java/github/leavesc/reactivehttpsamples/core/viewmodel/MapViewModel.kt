@@ -39,35 +39,6 @@ class MapViewModel : BaseViewModel() {
 
     val adCodeSelectedLiveData = MutableLiveData<String>()
 
-    /**
-     * 带body请求使用方法示例
-     */
-    fun bodyReqDemo(name: String, sex: String) {
-        remoteDataSource.enqueueLoading({
-            //主动延迟一段时间，避免弹窗太快消失
-            delay(2000)
-            bodyReqDemo(User(name, sex))
-        }) {
-            onStart {
-                log("onStart")
-            }
-            onSuccess {
-                log("onSuccess")
-            }
-            onSuccessIO {
-                log("onSuccessIO")
-            }
-            onFailed {
-                log("onFailed")
-            }
-            onCancelled {
-                log("onCancelled")
-            }
-            onFinally {
-                log("onFinally")
-            }
-        }
-    }
 
     fun getProvince() {
         remoteDataSource.enqueueLoading({
@@ -99,34 +70,6 @@ class MapViewModel : BaseViewModel() {
         }
     }
 
-    private fun getCity(province: String) {
-        remoteDataSource.enqueueLoading({
-            getCity(province)
-        }) {
-            onSuccess {
-                stateLiveData.value = TYPE_CITY
-                cityLiveData.value = it[0].districts
-                realLiveData.value = it[0].districts
-            }
-        }
-    }
-
-    private fun getCounty(city: String) {
-        remoteDataSource.enqueueLoading({
-            getCounty(city)
-        }) {
-            onSuccess {
-                val districts = it[0].districts
-                if (districts.isNullOrEmpty()) {
-                    adCodeSelectedLiveData.value = city
-                } else {
-                    stateLiveData.value = TYPE_COUNTY
-                    realLiveData.value = it[0].districts
-                }
-            }
-        }
-    }
-
     fun onBackPressed(): Boolean {
         when (stateLiveData.value) {
             TYPE_PROVINCE -> {
@@ -146,19 +89,6 @@ class MapViewModel : BaseViewModel() {
 
     fun onPlaceClicked(position: Int) {
         when (stateLiveData.value) {
-            TYPE_PROVINCE -> {
-                realLiveData.value?.get(position)?.adcode?.let {
-                    getCity(it)
-                }
-            }
-            TYPE_CITY -> {
-                realLiveData.value?.get(position)?.adcode?.let {
-                    getCounty(it)
-                }
-            }
-            TYPE_COUNTY -> {
-                adCodeSelectedLiveData.value = realLiveData.value?.get(position)?.adcode
-            }
         }
     }
 

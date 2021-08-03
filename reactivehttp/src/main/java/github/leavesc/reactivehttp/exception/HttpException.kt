@@ -1,7 +1,5 @@
 package github.leavesc.reactivehttp.exception
 
-import github.leavesc.reactivehttp.bean.IHttpWrapBean
-
 /**
  * @Author: leavesC
  * @Date: 2020/10/22 10:37
@@ -28,11 +26,6 @@ open class BaseHttpException(
 
     }
 
-    /**
-     * 是否是由于服务器返回的 code != successCode 导致的异常
-     */
-    val isServerCodeBadException: Boolean
-        get() = this is ServerCodeBadException
 
     /**
      * 是否是由于网络请求过程中抛出的异常（例如：服务器返回的 Json 解析失败）
@@ -42,17 +35,6 @@ open class BaseHttpException(
 
 }
 
-/**
- * API 请求成功了，但 code != successCode
- * @param errorCode
- * @param errorMessage
- */
-class ServerCodeBadException(errorCode: Int, errorMessage: String) :
-    BaseHttpException(errorCode, errorMessage, null) {
-
-    constructor(bean: IHttpWrapBean<*>) : this(bean.httpCode, bean.httpMsg)
-
-}
 
 /**
  * 请求过程抛出异常

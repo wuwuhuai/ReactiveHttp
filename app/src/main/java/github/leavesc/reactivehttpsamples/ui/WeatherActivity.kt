@@ -7,7 +7,6 @@ import github.leavesc.reactivehttpsamples.adapter.WeatherAdapter
 import github.leavesc.reactivehttpsamples.base.BaseActivity
 import github.leavesc.reactivehttpsamples.core.bean.CastsBean
 import github.leavesc.reactivehttpsamples.core.bean.ForecastsBean
-import github.leavesc.reactivehttpsamples.core.viewmodel.WeatherViewModel
 import kotlinx.android.synthetic.main.activity_weather.*
 
 /**
@@ -17,12 +16,6 @@ import kotlinx.android.synthetic.main.activity_weather.*
  * @GitHub：https://github.com/leavesC
  */
 class WeatherActivity : BaseActivity() {
-
-    private val weatherViewModel by getViewModel<WeatherViewModel> {
-        forecastsBeanLiveData.observe(this@WeatherActivity, {
-            showWeather(it)
-        })
-    }
 
     private val castsBeanList = mutableListOf<CastsBean>()
 
@@ -37,14 +30,11 @@ class WeatherActivity : BaseActivity() {
         setContentView(R.layout.activity_weather)
         rv_dailyForecast.layoutManager = LinearLayoutManager(this)
         rv_dailyForecast.adapter = weatherAdapter
-        swipeRefreshLayout.setOnRefreshListener {
-            weatherViewModel.getWeather(adCode)
-        }
+
         iv_place.setOnClickListener {
             startActivity<MapActivity>()
             finish()
         }
-        weatherViewModel.getWeather(adCode)
     }
 
     private fun showWeather(forecastsBean: ForecastsBean) {

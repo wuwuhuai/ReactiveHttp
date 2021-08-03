@@ -71,9 +71,6 @@ class MapActivity : BaseActivity() {
         )
         rv_placeList.adapter = placeAdapter
         mapViewModel.getProvince()
-
-        //带body请求示例
-        mapViewModel.bodyReqDemo("vinci", "男")
     }
 
     override fun onBackPressed() {
