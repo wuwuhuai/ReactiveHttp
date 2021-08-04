@@ -51,26 +51,26 @@ class MapActivity : BaseActivity() {
     }
 
     private val placeAdapter: PlaceAdapter =
-        PlaceAdapter(dataList, object : PlaceAdapter.OnClickListener {
-            override fun onClick(position: Int) {
-                mapViewModel.onPlaceClicked(position)
-            }
-        })
+            PlaceAdapter(dataList, object : PlaceAdapter.OnClickListener {
+                override fun onClick(position: Int) {
+                    mapViewModel.onPlaceClicked(position)
+                }
+            })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         rv_placeList.layoutManager = LinearLayoutManager(this)
         rv_placeList.addItemDecoration(
-            CommonItemDecoration(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.divider_plan_detail
-                ), LinearLayoutManager.VERTICAL
-            )
+                CommonItemDecoration(
+                        ContextCompat.getDrawable(
+                                this,
+                                R.drawable.divider_plan_detail
+                        ), LinearLayoutManager.VERTICAL
+                )
         )
         rv_placeList.adapter = placeAdapter
-        mapViewModel.getProvince()
+        mapViewModel.restGetProvince()
     }
 
     override fun onBackPressed() {

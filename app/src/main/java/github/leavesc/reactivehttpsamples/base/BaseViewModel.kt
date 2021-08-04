@@ -1,6 +1,7 @@
 package github.leavesc.reactivehttpsamples.base
 
 import github.leavesc.reactivehttp.base.BaseReactiveViewModel
+import github.leavesc.reactivehttpsamples.core.http.RestSelfRemoteDataSource
 import github.leavesc.reactivehttpsamples.core.http.SelfRemoteDataSource
 
 /**
@@ -17,6 +18,9 @@ open class BaseViewModel : BaseReactiveViewModel() {
      */
     protected open val remoteDataSource by lazy {
         SelfRemoteDataSource(this)
+    }
+    protected open val restRemoteDataSource by lazy {
+        RestSelfRemoteDataSource(this)
     }
 
 }

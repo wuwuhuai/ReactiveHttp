@@ -69,6 +69,36 @@ class MapViewModel : BaseViewModel() {
         }
     }
 
+    fun restGetProvince() {
+        restRemoteDataSource.enqueueLoading({
+            //主动延迟一段时间，避免弹窗太快消失
+            delay(2000)
+            restGetProvince()
+        }) {
+            onStart {
+                log("onStart")
+            }
+            onSuccess {
+                log("onSuccess")
+                stateLiveData.value = TYPE_PROVINCE
+                provinceLiveData.value = it[0].districts
+                realLiveData.value = it[0].districts
+            }
+            onSuccessIO {
+                log("onSuccessIO")
+            }
+            onFailed {
+                log("onFailed")
+            }
+            onCancelled {
+                log("onCancelled")
+            }
+            onFinally {
+                log("onFinally")
+            }
+        }
+    }
+
     fun onBackPressed(): Boolean {
         when (stateLiveData.value) {
             TYPE_PROVINCE -> {
