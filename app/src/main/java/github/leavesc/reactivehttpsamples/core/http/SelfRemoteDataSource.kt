@@ -1,7 +1,6 @@
 package github.leavesc.reactivehttpsamples.core.http
 
 import android.widget.Toast
-import github.leavesc.monitor.MonitorInterceptor
 import github.leavesc.reactivehttp.datasource.RemoteDataSource
 import github.leavesc.reactivehttp.viewmodel.IUIActionEvent
 import github.leavesc.reactivehttpsamples.MainApplication
@@ -79,7 +78,6 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
                     .retryOnConnectionFailure(true)
                     .addInterceptor(reqHeaderInterceptor)
                     .addInterceptor(queryParamInterceptor)
-                    .addInterceptor(MonitorInterceptor(MainApplication.context))
                     .addInterceptor(reqSignatureInterceptor)
                     .addInterceptor(loggingInterceptor)
                     .addInterceptor(reqEncryptInterceptor)
