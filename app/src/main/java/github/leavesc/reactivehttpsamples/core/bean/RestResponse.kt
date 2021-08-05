@@ -35,7 +35,7 @@ class RestResponse<T>(
         get() = data
 
     override val httpIsSuccess: Boolean
-        get() = code == HttpConfig.CODE_SERVER_SUCCESS || message == "OK"
+        get() = code == HttpConfig.CODE_SERVER_SUCCESS
 
     override fun toString(): String {
         return "HttpResBean(code=$code, message=$message, data=$data)"

@@ -2,6 +2,7 @@ package github.leavesc.reactivehttp.datasource
 
 import github.leavesc.reactivehttp.bean.IHttpWrapBean
 import github.leavesc.reactivehttp.callback.RequestCallback
+import github.leavesc.reactivehttp.exception.ServerCodeBadException
 import github.leavesc.reactivehttp.viewmodel.IUIActionEvent
 import kotlinx.coroutines.Job
 
@@ -45,9 +46,9 @@ abstract class RestRemoteDataSource<Api : Any>(
                 val response: IHttpWrapBean<Data>
                 try {
                     response = apiFun.invoke(getApiService(baseUrl))
-//                    if (!response.httpIsSuccess) {
-//                        throw ServerCodeBadException(response)
-//                    }
+                    if (!response.httpIsSuccess) {
+                        throw ServerCodeBadException(response)
+                    }
                 } catch (throwable: Throwable) {
                     handleException(throwable, callback)
                     return@launchMain
