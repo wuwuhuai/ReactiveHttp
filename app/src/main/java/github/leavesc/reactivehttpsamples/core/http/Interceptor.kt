@@ -123,6 +123,23 @@ class ReqQueryParamInterceptor : Interceptor {
     }
 }
 
+
+fun getBodyJsonStr(body: RequestBody?): String {
+    val buffer = Buffer()
+    body?.writeTo(buffer)
+    var charset = Charset.forName("UTF-8")
+    val contentType = body?.contentType()
+    if (contentType != null) {
+        try {
+            charset = contentType.charset(Charset.forName("UTF-8"));
+        } catch (e: Exception) {
+            e.printStackTrace();
+        }
+    }
+
+    return buffer.readString(charset)
+}
+
 /**
  * 请求内容加密拦截器
  */
@@ -136,20 +153,8 @@ class ReqEncryptInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         var originReq = chain.request()
-        val body = originReq.body
-        val buffer = Buffer()
-        body?.writeTo(buffer)
-        var charset = Charset.forName("UTF-8")
-        val contentType = body?.contentType()
-        if (contentType != null) {
-            try {
-                charset = contentType.charset(Charset.forName("UTF-8"));
-            } catch (e: Exception) {
-                e.printStackTrace();
-            }
-        }
 
-        var dataStr = buffer.readString(charset)
+        var dataStr = getBodyJsonStr(originReq.body)
         try {
             dataStr = DESUtils.encrypt(dataStr, keyStr)
         } catch (e: Exception) {
