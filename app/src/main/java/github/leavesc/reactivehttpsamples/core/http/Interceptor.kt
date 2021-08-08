@@ -1,5 +1,6 @@
 package github.leavesc.reactivehttpsamples.core.http
 
+import com.google.gson.Gson
 import github.leavesc.reactivehttpsamples.utils.DESUtils
 import github.leavesc.reactivehttpsamples.utils.HmacUtils
 import okhttp3.Interceptor
@@ -12,6 +13,7 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.GzipSink
 import okio.buffer
+import org.json.JSONObject
 import java.io.IOException
 import java.lang.StringBuilder
 import java.nio.charset.Charset
@@ -139,6 +141,48 @@ fun getBodyJsonStr(body: RequestBody?): String {
 
     return buffer.readString(charset)
 }
+
+/**
+ * 请求内容拦截器:用于POST 请求 RequestBody 添加公共参数
+ */
+class BodyInterceptor : Interceptor {
+
+    private val mediaType = "application/json; charset=UTF-8".toMediaTypeOrNull()
+
+
+    private val bodyParamsMap: java.util.LinkedHashMap<String, Any> = java.util.LinkedHashMap()
+
+    fun addBodyParam(key: String, value: Any) {
+        bodyParamsMap[key] = value
+    }
+
+
+
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        var originReq = chain.request()
+
+
+        val bodyJsonStr = getBodyJsonStr(originReq.body)
+        val bodyJsonObject = JSONObject(bodyJsonStr)
+        val gson = Gson()
+        bodyParamsMap.forEach {
+            val valueJsonStr = gson.toJson(it.value)
+            val valueJsonObject = JSONObject(valueJsonStr)
+            bodyJsonObject.put(it.key, valueJsonObject)
+        }
+
+
+        val newReq =
+                originReq.newBuilder().post(RequestBody.create(mediaType, bodyJsonObject.toString()))
+                        .build()
+        return chain.proceed(newReq)
+
+
+    }
+}
+
 
 /**
  * 请求内容加密拦截器
