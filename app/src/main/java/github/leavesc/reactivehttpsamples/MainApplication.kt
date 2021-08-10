@@ -2,6 +2,7 @@ package github.leavesc.reactivehttpsamples
 
 import android.app.Application
 import android.content.Context
+import com.tencent.mmkv.MMKV
 
 /**
  * @Author: leavesC
@@ -10,16 +11,22 @@ import android.content.Context
  * @GitHub：https://github.com/leavesC
  */
 class MainApplication : Application() {
+    lateinit var kv: MMKV
 
     companion object {
 
-        lateinit var context: Context
+        lateinit var app: MainApplication
 
     }
 
     override fun onCreate() {
         super.onCreate()
-        context = this
+        app = this
+
+        //初始化MMKV
+        val rootDir: String = MMKV.initialize(this)
+        println("mmkv root: $rootDir")
+        kv = MMKV.defaultMMKV()
     }
 
 }

@@ -108,7 +108,7 @@ class SelfRemoteDataSource(iActionEvent: IUIActionEvent?) :
     }
 
     override fun showToast(msg: String) {
-        Toast.makeText(MainApplication.context, msg, Toast.LENGTH_SHORT).show()
+        Toast.makeText(MainApplication.app, msg, Toast.LENGTH_SHORT).show()
     }
 
 }
